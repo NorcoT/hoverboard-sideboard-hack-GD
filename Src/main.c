@@ -132,12 +132,15 @@ int main(void)
 		#ifdef SERIAL_CONTROL
 			// To transmit on USART
 			if (main_loop_counter % 5 == 0 && dma_transfer_number_get(DMA_CH3) == 0) { 	// Check if DMA channel counter is 0 (meaning all data has been transferred)
-				Sideboard.start    	= (uint16_t)SERIAL_START_FRAME;
-				Sideboard.roll    	= (int16_t)mpu.euler.roll;
-				Sideboard.pitch    	= (int16_t)mpu.euler.pitch;
-				Sideboard.yaw    	= (int16_t)mpu.euler.yaw;
-				Sideboard.sensors	= (uint16_t)(sensor1 | (sensor2 << 1) | (mpuStatus << 2));
-				Sideboard.checksum 	= (uint16_t)(Sideboard.start ^ Sideboard.roll ^ Sideboard.pitch ^ Sideboard.yaw ^ Sideboard.sensors);
+				Sideboard.start    	 = (uint16_t)SERIAL_START_FRAME;
+				Sideboard.roll    	 = (int16_t)mpu.euler.roll;
+				Sideboard.pitch    	 = (int16_t)mpu.euler.pitch;
+				Sideboard.yaw    		 = (int16_t)mpu.euler.yaw;
+				Sideboard.gyro_roll  = (int16_t)mpu.gyro.x;
+				Sideboard.gyro_pitch = (int16_t)mpu.gyro.y;
+				Sideboard.gyro_yaw   = (int16_t)mpu.gyro.z;
+				Sideboard.sensors		 = (uint16_t)(sensor1 | (sensor2 << 1) | (mpuStatus << 2));
+				Sideboard.checksum 	 = (uint16_t)(Sideboard.start ^ Sideboard.roll ^ Sideboard.pitch ^ Sideboard.yaw ^ Sideboard.gyro_roll ^ Sideboard.gyro_pitch ^ Sideboard.gyro_yaw ^ Sideboard.sensors);
 			
 				dma_channel_disable(DMA_CH3);
 				DMA_CHCNT(DMA_CH3) 		= sizeof(Sideboard);
